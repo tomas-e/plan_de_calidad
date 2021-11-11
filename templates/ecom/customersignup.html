@@ -23,10 +23,11 @@
     top: 50%;
     left: 50%;
     background: #191919;
-    ;
+    position: relative;
     text-align: center;
     transition: 0.25s;
     margin-top: 100px
+    
 }
 
 .box input[type="text"],
@@ -143,6 +144,32 @@ a.socialIcon:hover,
     transition: all 0.8s;
     transition: all 0.8s
 }
+.box-input{
+    position:relative;
+   
+}
+.box-input small{
+    visibility: hidden;
+    color:red;
+    position: relative;
+    top: -5px;
+    margin: -15px;
+    display: block;
+    color: red;
+    font-size: 10px;
+
+}
+.box-input.error small{
+
+    
+    visibility: visible;
+    
+}
+
+
+#id_profile_pic{
+    margin-top:20px;
+}
     </style>
   </head>
   <body>
@@ -155,15 +182,34 @@ a.socialIcon:hover,
                   {% csrf_token %}
                     <h1>CUSTOMER SIGNUP</h1>
                     <p class="text-muted"> Please enter your details to create account !</p>
-                      {% render_field userForm.first_name class="form-control" placeholder="First Name" %}
+                    <div class="box-input">{% render_field userForm.first_name class="form-control" placeholder="First Name" %}
+                        <small >Debe ingresar dato</small>
+                    </div>
+                    <div class="box-input">
                         {% render_field userForm.last_name class="form-control" placeholder="Last Name" %}
-                          {% render_field userForm.username class="form-control" placeholder="Username" %}
-                            {% render_field userForm.password class="form-control" placeholder="Password" %}
-                              {% render_field customerForm.address class="form-control" placeholder="Address" %}
-                                {% render_field customerForm.mobile class="form-control" placeholder="Mobile" %}
-                                  {% render_field customerForm.profile_pic class="form-control" placeholder="Profile pic" %}
-                  
-                     <input type="submit" name="" value="Create">
+                        <small >Debe ingresar dato</small>
+                    </div>    
+                    <div class="box-input">    
+                        {% render_field userForm.username class="form-control" placeholder="Username" %}
+                        <small >Debe ingresar dato</small>
+                    </div>
+                    <div class="box-input">    
+                        {% render_field userForm.password class="form-control" placeholder="Password" %}
+                        <small >Debe ingresar dato</small>
+                    </div>
+                        <div class="box-input">   
+                        {% render_field customerForm.address class="form-control" placeholder="Address" %}
+                        <small >Debe ingresar dato</small>
+                    </div>
+                        <div class="box-input">    
+                        {% render_field customerForm.mobile class="form-control" placeholder="Mobile" %}
+                        <small >Debe ingresar dato</small>
+                    </div>
+                        <div class="box-input">    
+                        {% render_field customerForm.profile_pic class="form-control" placeholder="Profile pic" %}
+             
+                    </div>
+                     <input type="submit" name="" value="Create" id="submitButton">
 
                 </form>
             </div>
@@ -176,5 +222,68 @@ a.socialIcon:hover,
 <br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br>
 {% include "ecom/footer.html" %}
+
+    <script>
+        
+        var submitButton = document.getElementById("submitButton");
+        var firstName = document.getElementById("id_first_name");
+        var lastName = document.getElementById("id_last_name");
+        var username = document.getElementById("id_username");
+        var password = document.getElementById("id_password");
+        var address = document.getElementById("id_address");
+        var mobile = document.getElementById("id_mobile");
+        
+        
+        function showError(input, message){
+            input.parentElement.classList.add("error");
+            input.nextElementSibling.textContent= message;
+            
+
+            
+        }
+        function showSuccess(input){
+            input.parentElement.classList.remove("error");
+        };
+
+        function checkPassword(input){
+            const password = input.value.trim();
+            if (password.length < 4){
+                showError(input, "El largo minimo debe ser de más de 4 caractéres")
+            }
+            else if(password.length > 15){
+                showError(input, "El largo máximo debe ser de menos de 16 caractéres")
+            }
+            else{
+                    showSuccess(input);
+                }
+
+
+        }
+        function checkRequired(inputArr){
+      
+            inputArr.forEach(element => {
+                if(element.value.trim() === ""){
+                    showError(element, "Campo vacío");
+                       
+                }
+
+                else if(element.id === "id_password"){
+                checkPassword(element);
+                }
+
+                else{
+                    showSuccess(element);
+                }
+            });
+
+        }
+
+        submitButton.addEventListener("click", ()=>{
+            checkRequired([firstName, lastName, username, password, address, mobile]);
+        });
+
+      
+
+    </script>
   </body>
 </html>
